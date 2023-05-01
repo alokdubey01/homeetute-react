@@ -6,7 +6,7 @@ import db from "../firebase";
 import { storage } from "../firebase";
 import { BsCheckCircle, BsCheckCircleFill } from 'react-icons/bs'
 import { RadioGroup } from '@headlessui/react'
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../HOC/AuthContext";
 
 const years = [
@@ -71,19 +71,37 @@ export default function Register() {
     const [area, setArea] = React.useState("");
     const [college, setCollege] = React.useState("");
     const [course, setCourse] = React.useState("");
-    const [degree, setDegree] = React.useState("");
-    const [joiningYear, setJoiningYear] = React.useState("");
-    const [leavingYear, setLeavingYear] = React.useState("");
-    const [subject, setSubject] = React.useState("");
+    const [favSubject, setFavSubject] = React.useState("");
     const [level, setLevel] = React.useState("");
     const [desc, setDesc] = React.useState("");
-    const [subDegree, setSubDegree] = React.useState("");
+    // const [subDegree, setSubDegree] = React.useState("");
+    const [inputList, setInputList] = React.useState([{ subject: "", level: "" }]);
     const [openingTime, setOpeningTime] = React.useState("");
     const [closingTime, setClosingTime] = React.useState("");
     const [allowedTime, setAllowedTime] = React.useState("");
     const [picture, setPicture] = React.useState("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
 
     const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const handleInputChange = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...inputList];
+        list[index][name] = value;
+        setInputList(list);
+    };
+
+    // handle click event of the Remove button
+    const handleRemoveClick = index => {
+        const list = [...inputList];
+        list.splice(index, 1);
+        setInputList(list);
+    };
+
+    // handle click event of the Add button
+    const handleAddClick = () => {
+        setInputList([...inputList, { subject: "", level: "" }]);
+    };
 
     const nextStep = () => {
         setStep(step + 1);
@@ -97,12 +115,12 @@ export default function Register() {
         setStep(7);
 
         if (step) {
-            if (firstName.length < 3, lastName.length < 3, dob.length < 3, state.length < 3, city.length < 3, pincode.length < 3, address.length < 3, area.length < 3, college.length < 3, course.length < 3, degree.length < 3, joiningYear.length < 3, leavingYear.length < 3, subject.length < 3, level.length < 3, desc.length < 3, subDegree.length < 3, openingTime.length < 3, closingTime.length < 3, allowedTime.length < 3, houseNo.length < 3) {
+            if (firstName.length < 3, lastName.length < 3, dob.length < 3, state.length < 3, city.length < 3, pincode.length < 3, area.length < 3, college.length < 3, course.length < 3, inputList.length < 1, desc.length < 3, openingTime.length < 3, closingTime.length < 3, allowedTime.length < 3, houseNo.length < 3) {
                 setError(true)
                 console.log("please fill the form.")
             }
             else {
-                setDoc(doc(db, "users", user.uid), {
+                setDoc(doc(db, "students", user.uid), {
                     firstName: firstName,
                     lastName: lastName,
                     image: picture,
@@ -111,17 +129,13 @@ export default function Register() {
                     state: state,
                     city: city,
                     pincode: pincode,
-                    address: address,
+                    landmark: address,
                     area: area,
                     college: college,
                     course: course,
-                    degree: degree,
-                    joiningYear: joiningYear,
-                    leavingYear: leavingYear,
-                    subject: subject,
-                    level: level,
+                    Favorite_Subject: favSubject,
+                    subjects: inputList,
                     desc: desc,
-                    subDegree: subDegree,
                     openingTime: openingTime,
                     closingTime: closingTime,
                     allowedTime: allowedTime,
@@ -129,7 +143,7 @@ export default function Register() {
                 })
                     .then((docRef) => {
                         console.log("Document written with ID: ", docRef);
-                        Navigate("/")
+                        navigate("/")
                     })
                     .catch((error) => {
                         console.log(error);
@@ -183,7 +197,7 @@ export default function Register() {
                                     <div className="mb-5 text-center">
                                         <div className="mx-auto w-32 h-32 border rounded-full relative bg-gray-100 mb-4 shadow-inset">
                                             <img id="image" className="object-cover w-full h-32 rounded-full"
-                                                src={picture ? picture : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"}
+                                                src={picture ? picture : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"} alt="dp"
                                             />
                                         </div>
 
@@ -334,7 +348,7 @@ export default function Register() {
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="House No./Street"
                                             >
-                                                House No./Street <sup>*</sup>
+                                                House No./Building <sup>*</sup>
                                             </label>
                                             <input
                                                 type="text"
@@ -342,7 +356,7 @@ export default function Register() {
                                                 value={houseNo}
                                                 onChange={(e) => setHouseNo(e.target.value)}
                                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
-                                                aria-labelledby="House No./Street"
+                                                aria-labelledby="House No./Building"
                                                 placeholder="Enter your Street/House No."
                                             />
                                         </div>
@@ -351,14 +365,14 @@ export default function Register() {
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="Locality"
                                             >
-                                                Locality
+                                                Area, Street, Sector <sup>*</sup>
                                             </label>
                                             <input
                                                 type="text"
                                                 tabIndex="0"
                                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800 read-only:bg-slate-300"
                                                 aria-labelledby="Locality"
-                                                placeholder="Enter your Locality"
+                                                placeholder="Enter your Area/Street/Sector"
                                                 value={area}
                                                 onChange={(e) => setArea(e.target.value)}
                                             />
@@ -370,7 +384,7 @@ export default function Register() {
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="address"
                                             >
-                                                Address
+                                                LandMark <sup>(optional)</sup>
                                             </label>
                                             <input
                                                 type="text"
@@ -379,7 +393,7 @@ export default function Register() {
                                                 onChange={(e) => setAddress(e.target.value)}
                                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
                                                 aria-labelledby="address"
-                                                placeholder="Enter your Address"
+                                                placeholder="E.g. Near to XYZ School"
                                             />
                                         </div>
                                         <div className="md:w-64 md:ml-12 md:mt-2 mt-4">
@@ -387,14 +401,14 @@ export default function Register() {
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="pincode"
                                             >
-                                                Pin Code
+                                                Pin Code <sup>*</sup>
                                             </label>
                                             <input
                                                 type="text"
                                                 tabIndex="0"
                                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800 read-only:bg-slate-300"
                                                 aria-labelledby="pincode"
-                                                placeholder="Enter your Pin Code"
+                                                placeholder="6 digit [0-9] Pin Code"
                                                 value={pincode}
                                                 onChange={(e) => setPincode(e.target.value)}
                                             />
@@ -406,14 +420,14 @@ export default function Register() {
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="city"
                                             >
-                                                City
+                                                City/Town <sup>*</sup>
                                             </label>
                                             <input
                                                 type="text"
                                                 tabIndex="0"
                                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800 read-only:bg-slate-300"
                                                 aria-labelledby="city"
-                                                placeholder="Your City"
+                                                placeholder="Your City/Town"
                                                 value={city}
                                                 onChange={(e) => setCity(e.target.value)}
                                                 readOnly
@@ -495,21 +509,22 @@ export default function Register() {
                                 <div className="w-80">
                                     <div className="flex items-center">
                                         <h1 className="text-2xl font-medium pr-2 leading-7 text-gray-800" style={{ fontFamily: 'Alkatra' }}>
-                                            Higher Education
+                                            Current Education Details
                                         </h1>
                                     </div>
                                     <p className="mt-4 text-sm leading-5 text-gray-600" style={{ fontFamily: 'Edu NSW ACT Foundation' }}>
-                                        Please enter your higher education details to proceed.
+                                        Please fill in your current education details.
                                     </p>
                                 </div>
                                 <div>
+
                                     <div className="md:flex items-center lg:ml-24 lg:mt-2 mt-4">
                                         <div className="md:w-64">
                                             <label
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="school"
                                             >
-                                                School/University <sup>*</sup>
+                                                School Name <sup>*</sup>
                                             </label>
                                             <input
                                                 type="text"
@@ -521,12 +536,12 @@ export default function Register() {
                                                 placeholder="University Name"
                                             />
                                         </div>
-                                        <div className="md:w-64 md:ml-12 md:mt-2 mt-4">
+                                        <div className="md:w-64 md:ml-12 md:mt-2 -mt-2">
                                             <label
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="education"
                                             >
-                                                Cources
+                                                Class <sup>*</sup>
                                             </label>
                                             <select
                                                 type="text"
@@ -539,16 +554,22 @@ export default function Register() {
                                                 <option hidden value="Select Education">
                                                     Select Cources
                                                 </option>
-                                                <option value="B.A.">B.A.</option>
-                                                <option value="B.Sc">B.Sc</option>
-                                                <option value="B.Ed">B.Ed</option>
-                                                <option value="B.Tech">B.Tech</option>
-                                                <option value="B.Pharma">B.Pharma</option>
-                                                <option value="M.A.">M.A.</option>
-                                                <option value="M.Sc">M.Sc</option>
-                                                <option value="M.Ed">M.Ed</option>
-                                                <option value="M.Tech">M.Tech</option>
-                                                <option value="M.Pharma">M.Pharma</option>
+                                                <option value="Pre Nursery">Pre Nursery</option>
+                                                <option value="Nursery">Nursery</option>
+                                                <option value="LKG">LKG</option>
+                                                <option value="UKG">UKG</option>
+                                                <option value="1st">1st</option>
+                                                <option value="2nd">2nd</option>
+                                                <option value="3rd">3rd</option>
+                                                <option value="4th">4th</option>
+                                                <option value="5th">5th</option>
+                                                <option value="6th">6th</option>
+                                                <option value="7th">7th</option>
+                                                <option value="8th">8th</option>
+                                                <option value="9th">9th</option>
+                                                <option value="10th">10th</option>
+                                                <option value="11th">11th</option>
+                                                <option value="12th">12th</option>
                                             </select>
                                         </div>
                                     </div>
@@ -558,24 +579,25 @@ export default function Register() {
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="degree"
                                             >
-                                                Field of Study <sup>*</sup>
+                                                Subject <sup>(only for class 11th & 12th)</sup>
                                             </label>
                                             <input
                                                 type="text"
                                                 tabIndex="0"
-                                                value={degree}
-                                                onChange={(e) => setDegree(e.target.value)}
+                                                value={favSubject}
+                                                onChange={(e) => setFavSubject(e.target.value)}
                                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
                                                 aria-labelledby="degree"
-                                                placeholder="Field Name"
+                                                placeholder="Science, Commerce, Arts etc."
                                             />
                                         </div>
-                                        <div className="md:w-64 md:ml-12 md:mt-2 mt-4">
+                                        {/* <div className="md:w-64 md:ml-12 md:mt-2 mt-4">
                                             <label
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
                                                 id="subField"
                                             >
-                                                Sub Field of Study
+                                                
+
                                             </label>
                                             <input
                                                 type="text"
@@ -586,57 +608,7 @@ export default function Register() {
                                                 aria-labelledby="First Name"
                                                 placeholder="Sub Field(optional)"
                                             />
-                                        </div>
-                                    </div>
-                                    <div className="md:flex items-center lg:ml-24 lg:mt-2 mt-4">
-                                        <div className="md:w-64">
-                                            <label
-                                                className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
-                                                id="joinigYear"
-                                            >
-                                                Years Attended
-                                            </label>
-                                            <select
-                                                type="text"
-                                                tabIndex="0"
-                                                value={joiningYear}
-                                                onChange={(e) => setJoiningYear(e.target.value)}
-                                                className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
-                                                aria-labelledby="joinigYear"
-                                            >
-                                                <option hidden value="Select Education">
-                                                    Select Year
-                                                </option>
-                                                {/* <option value="2023">2023</option> */}
-                                                {years.map((year) => (
-                                                    <option key={year.id} value={year.name}>{year.name}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="md:w-64 md:ml-12 md:mt-2 mt-4">
-                                            <label
-                                                className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
-                                                id="leavingYear"
-                                            >
-                                                Years Leaved
-                                            </label>
-                                            <select
-                                                type="text"
-                                                tabIndex="0"
-                                                value={leavingYear}
-                                                onChange={(e) => setLeavingYear(e.target.value)}
-                                                className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
-                                                aria-labelledby="leavingYear"
-                                            >
-                                                <option hidden value="Select Education">
-                                                    Select Year
-                                                </option>
-                                                {/* <option value="2023">2023</option> */}
-                                                {years.map((year) => (
-                                                    <option key={year.id} value={year.name}>{year.name}</option>
-                                                ))}
-                                            </select>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -711,46 +683,84 @@ export default function Register() {
                                             >
                                                 Subject <sup>*</sup>
                                             </label>
-                                            <input
-                                                type="text"
-                                                tabIndex="0"
-                                                value={subject}
-                                                onChange={(e) => setSubject(e.target.value)}
-                                                className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
-                                                aria-labelledby="First Name"
-                                                placeholder="Subject Name"
-                                            />
+                                            {inputList.map((x, i) => {
+                                                return (
+                                                    <div>
+                                                        <input
+                                                            name="subject"
+                                                            type="text"
+                                                            tabIndex="0"
+                                                            value={x.subject}
+                                                            onChange={(e) => handleInputChange(e, i)}
+                                                            className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
+                                                            aria-labelledby="subject"
+                                                            placeholder="Subject Name"
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
                                         <div className="md:w-64 md:ml-12 md:mt-2 mt-4">
                                             <label
                                                 className="text-sm leading-none text-black font-medium" style={{ letterSpacing: '0.33px' }}
-                                                id="lastName"
+                                                id="proficiency"
                                             >
                                                 Proficiency
                                             </label>
-                                            <select
-                                                type="text"
-                                                tabIndex="0"
-                                                value={level}
-                                                onChange={(e) => setLevel(e.target.value)}
-                                                className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
-                                                aria-labelledby="education"
-                                            >
-                                                <option hidden value="Select Education">
-                                                    Select level
-                                                </option>
-                                                <option value="Basic">Basic</option>
-                                                <option value="Intermediate">Intermediate</option>
-                                                <option value="Expert">Expert</option>
-                                            </select>
+                                            {inputList.map((x, i) => {
+                                                return (
+                                                    <div className="flex items-center">
+                                                        <select
+                                                        name="level"
+                                                        type="text"
+                                                        tabIndex="0"
+                                                        value={x.level}
+                                                        onChange={(e) => handleInputChange(e, i)}
+                                                        className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
+                                                        aria-labelledby="proficiency"
+                                                    >
+                                                        <option hidden value="Select Education">
+                                                            Select level
+                                                        </option>
+                                                        <option value="Basic">Basic</option>
+                                                        <option value="Intermediate">Intermediate</option>
+                                                        <option value="Expert">Expert</option>
+                                                    </select>
+                                                    <div>
+                                                        {inputList.length !== 1 && <button
+                                                            className="ml-10"
+                                                            onClick={() => handleRemoveClick(i)}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>
+                                                        </button>}
+                                                    </div>
+                                                    </div>
+                                                    
+                                                )
+                                            })}
                                         </div>
                                     </div>
-                                    <div className="flex items-center lg:ml-24 lg:mt-2 mt-4 gap-1 text-indigo-700 border border-gray-300 rounded-full px-4 py-2 text-xs w-32 cursor-pointer hover:bg-indigo-700 hover:bg-opacity-20">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                        Add Subject
-                                    </div>
+                                    {inputList.map((x, i) => {
+                                        return (
+                                            <div className="btn-box">
+                                                {/* {inputList.length !== 1 && <button
+                                                    className="mr-10"
+                                                    onClick={() => handleRemoveClick(i)}><div className="flex items-center lg:ml-24 lg:mt-2 mt-4 gap-1 text-indigo-700 border border-gray-300 rounded-full px-4 py-2 text-xs w-32 cursor-pointer hover:bg-indigo-700 hover:bg-opacity-20">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                    Remove Subject
+                                                </div></button>} */}
+                                                {inputList.length - 1 === i && <button onClick={handleAddClick}><div className="flex items-center lg:ml-24 lg:mt-2 mt-4 gap-1 text-indigo-700 border border-gray-300 rounded-full px-4 py-2 text-xs w-32 cursor-pointer hover:bg-indigo-700 hover:bg-opacity-20">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                    Add Subject
+                                                </div></button>}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>

@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     signOut(auth)
+    localStorage.removeItem('userId')
     console.log("Logged out")
     setUser(null)
     Navigate('/')
@@ -44,7 +45,6 @@ export function AuthProvider({ children }) {
 
   return (
     <authContext.Provider value={value}>
-      {/* {!loading && children} */}
       {!loading ? children : <div>Loading...</div>}
     </authContext.Provider>
   )

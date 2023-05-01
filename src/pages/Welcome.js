@@ -1,17 +1,23 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { BsBook } from 'react-icons/bs'
 import Corousel from '../components/Corousel'
-import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
 import girl from "../images/girl.svg"
+// import Cookie from '../components/Cookie'
+import { Helmet } from 'react-helmet'
+import useAuth from '../HOC/AuthContext'
 
 export default function Welcome() {
+    // const [cookie, setCookie] = useState(false)
+    const {user} = useAuth()
+
     return (
         <>
-            <div style={{ backgroundColor: "#f9fbfc", height: "100vh" }}>
-                {/* <Head>
+            {user ? <Navigate to="/home" /> : (
+                <div style={{ backgroundColor: "#f9fbfc", height: "100vh" }}>
+                <Helmet>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" />
             <link
@@ -33,17 +39,18 @@ export default function Welcome() {
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-        </Head> */}
+        </Helmet>
                 <Navbar />
 
-                {/* Landing Page */}
+                <div style={{zIndex: 99}}>
+                    {/* {cookie && <Cookie/>} */}
+                </div>
                 <section className="grid grid-cols-2 items-center">
                     <div className="col-span-1">
                         <div
                             className="text-3xl mx-auto w-4/6 font-semibold capitalize leading-[1.4]"
                             style={{ fontFamily: "mitr" }}
                         >
-                            {/* Getting Best Quality Education is now easy with WelcomeeTute */}
                             Get the best quality education from the comfort of your Home
                         </div>
                         <div className="mx-auto w-4/6 text-sm mt-4 leading-5">
@@ -221,6 +228,7 @@ export default function Welcome() {
                     </div>
                 </section>
             </div>
+            )}
         </>
     )
 }

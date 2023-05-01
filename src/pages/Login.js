@@ -6,7 +6,8 @@ import { signInWithPhoneNumber, RecaptchaVerifier } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import flag from '../images/india.png'
 import OTPInput, { ResendOTP } from 'otp-input-react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 export default function Login() {
   const [mobileError, setMobileError] = useState("")
@@ -19,8 +20,8 @@ export default function Login() {
   const [otp, setOtp] = useState("")
   const [otpSent, setOtpSent] = useState(false)
   const [newUser, setNewUser] = useState(false)
-  const [role, setRole] = useState("")
 
+  const navigate = useNavigate()
 
   function onCaptchVerify() {
     if (!window.recaptchaVerifier) {
@@ -67,27 +68,27 @@ export default function Login() {
         if (existing_uid === false) {
           setNewUser(false);
           setLoading(false);
+          navigate('/home')
         } else {
           setNewUser(true);
           setLoading(false);
-          setDoc(doc(db, "users", result.user.uid), {
+          setDoc(doc(db, "students", result.user.uid), {
             uid: result.user.uid,
             mobile: mobile,
-            role: setRole,
+            role: "student",
           })
             .then(() => {
               console.log("Document successfully written!");
-              Navigate('/register')
+              navigate('/register');
             })
             .catch((error) => {
               console.error("Error writing document: ", error);
-              window.location.reload();
+              // window.location.reload();
             });
         }
         setOtpSuccess(true);
       })
       .catch((error) => {
-        setOtpError(true);
         console.log(error)
       });
   }
@@ -197,41 +198,41 @@ export default function Login() {
         )}
         {otpResend && ( // OTP resend message block starts here
           <div className="flex flex-row pl-4 py-2 gap-2 items-center border rounded-lg shadow overflow-hidden bg-green-50 border-green-600">
-          <span className="flex-shrink-0 inline-flex mx-3 item-center justify-center leading-none rounded-full bg-green-600 text-green-50">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-8 w-8">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
-            </svg>
-          </span>
-          <div className="flex-1 p-2">
-            <p className="text-sm text-gray-800">
-              OTP resent successfully
-            </p>
+            <span className="flex-shrink-0 inline-flex mx-3 item-center justify-center leading-none rounded-full bg-green-600 text-green-50">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-8 w-8">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
+              </svg>
+            </span>
+            <div className="flex-1 p-2">
+              <p className="text-sm text-gray-800">
+                OTP resent successfully
+              </p>
+            </div>
+            <button type="button" className="ml-6 p-2 text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
+              </svg>
+            </button>
           </div>
-          <button type="button" className="ml-6 p-2 text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
-            </svg>
-          </button>
-        </div>
         )}
         {otpResendError && ( // OTP resend error message block starts here
           <div className="flex flex-row pl-4 py-2 gap-2 items-center border rounded-lg shadow overflow-hidden bg-red-50 border-red-600">
-          <span className="flex-shrink-0 inline-flex mx-3 item-center justify-center leading-none rounded-full bg-red-600 text-red-50">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-8 w-8">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
-            </svg>
-          </span>
-          <div className="flex-1 p-2">
-            <p className="text-sm text-gray-800">
-              OTP resend failed
-            </p>
+            <span className="flex-shrink-0 inline-flex mx-3 item-center justify-center leading-none rounded-full bg-red-600 text-red-50">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-8 w-8">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
+              </svg>
+            </span>
+            <div className="flex-1 p-2">
+              <p className="text-sm text-gray-800">
+                OTP resend failed
+              </p>
+            </div>
+            <button type="button" className="ml-6 p-2 text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
+              </svg>
+            </button>
           </div>
-          <button type="button" className="ml-6 p-2 text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
-            </svg>
-          </button>
-        </div>
         )}
 
         <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-900 dark:text-gray-100">
@@ -284,7 +285,7 @@ export default function Login() {
                   </label>
                 </div>
                 <OTPInput inputClassName="bg-white border border-gray-200 focus:outline-indigo-600 focus:outline-2 text-sm font-medium leading-nonef text-gray-800 read-only:bg-slate-300" value={otp} onChange={setOtp} autoFocus OTPLength={6} otpType="number" disabled={false} secure />
-              <ResendOTP className="mt-2" maxTime={30} onResendClick={resendOtp} />
+                <ResendOTP className="mt-2" maxTime={30} onResendClick={resendOtp} />
               </div>
             </div>
             {!otpSent ? (
