@@ -1,6 +1,6 @@
 /* eslint-disable default-case */
 import React, { useEffect } from "react";
-import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL, uploadString, getStorage } from 'firebase/storage';
 import db from "../firebase";
 import { storage } from "../firebase";
@@ -56,6 +56,7 @@ const years = [
 
 export default function Register() {
     const [msg, setMsg] = React.useState(true)
+    const [loading, setLoading] = React.useState(true)
     const [step, setStep] = React.useState(1);
     const [selected, setSelected] = React.useState(0);
     const [pricing, setPricing] = React.useState(0);
@@ -79,10 +80,29 @@ export default function Register() {
     const [openingTime, setOpeningTime] = React.useState("");
     const [closingTime, setClosingTime] = React.useState("");
     const [allowedTime, setAllowedTime] = React.useState("");
-    const [picture, setPicture] = React.useState("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+    const [picture, setPicture] = React.useState(null);
 
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const docRef = doc(db, "students", user.uid);
+        getDoc(docRef)
+            .then((doc) => {
+                const data = doc.data();
+                console.log(data)
+                if (data.firstName === undefined) {
+                    setLoading(false);
+                }
+                else {
+                    setLoading(false);
+                    navigate("/");
+                }
+            })
+            .catch((error) => {
+                console.log("Error getting document:", error);
+            });
+    });
 
     const handleInputChange = (e, index) => {
         const { name, value } = e.target;
@@ -155,35 +175,52 @@ export default function Register() {
 
     const fileUpload = async (e) => {
         setPicture(URL.createObjectURL(e.target.files[0]))
-        const file = e.target.files[0];
-        const storageRef = ref(storage, `images/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
 
-        uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-                const progress =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log("Upload is " + progress + "% done");
-                switch (snapshot.state) {
-                    case "paused":
-                        console.log("Upload is paused");
-                        break;
-                    case "running":
-                        console.log("Upload is running");
-                        break;
-                }
-            },
-            (error) => {
-                console.log(error);
-            },
-            () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log("File available at", downloadURL);
-                    setPicture(downloadURL);
-                });
-            }
-        );
+        const storageRef = ref(storage, `students/${user.uid}/profile`)
+        const uploadTask = uploadBytesResumable(storageRef, picture, 'data_url')
+        uploadTask.on('state_changed', (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            console.log('Upload is ' + progress + '% done')
+        }, (error) => {
+            console.log(error)
+        }, () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                console.log('File available at', downloadURL)
+                const docRef = doc(db, "teachers", user.uid)
+                setDoc(docRef, {
+                    image: downloadURL
+                }, { merge: true })
+            })
+        })
+
+        // const storageRef = ref(storage, `images/${file.name}`);
+        // const uploadTask = uploadBytesResumable(storageRef, file);
+
+        // uploadTask.on(
+        //     "state_changed",
+        //     (snapshot) => {
+        //         const progress =
+        //             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        //         console.log("Upload is " + progress + "% done");
+        //         switch (snapshot.state) {
+        //             case "paused":
+        //                 console.log("Upload is paused");
+        //                 break;
+        //             case "running":
+        //                 console.log("Upload is running");
+        //                 break;
+        //         }
+        //     },
+        //     (error) => {
+        //         console.log(error);
+        //     },
+        //     () => {
+        //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        //             console.log("File available at", downloadURL);
+        //             setPicture(downloadURL);
+        //         });
+        //     }
+        // );
     };
 
     const forms = (step) => {
@@ -711,32 +748,32 @@ export default function Register() {
                                                 return (
                                                     <div className="flex items-center">
                                                         <select
-                                                        name="level"
-                                                        type="text"
-                                                        tabIndex="0"
-                                                        value={x.level}
-                                                        onChange={(e) => handleInputChange(e, i)}
-                                                        className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
-                                                        aria-labelledby="proficiency"
-                                                    >
-                                                        <option hidden value="Select Education">
-                                                            Select level
-                                                        </option>
-                                                        <option value="Basic">Basic</option>
-                                                        <option value="Intermediate">Intermediate</option>
-                                                        <option value="Expert">Expert</option>
-                                                    </select>
-                                                    <div>
-                                                        {inputList.length !== 1 && <button
-                                                            className="ml-10"
-                                                            onClick={() => handleRemoveClick(i)}>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-</svg>
-                                                        </button>}
+                                                            name="level"
+                                                            type="text"
+                                                            tabIndex="0"
+                                                            value={x.level}
+                                                            onChange={(e) => handleInputChange(e, i)}
+                                                            className="w-full p-3 mt-1 bg-white border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
+                                                            aria-labelledby="proficiency"
+                                                        >
+                                                            <option hidden value="Select Education">
+                                                                Select level
+                                                            </option>
+                                                            <option value="Basic">Basic</option>
+                                                            <option value="Intermediate">Intermediate</option>
+                                                            <option value="Expert">Expert</option>
+                                                        </select>
+                                                        <div>
+                                                            {inputList.length !== 1 && <button
+                                                                className="ml-10"
+                                                                onClick={() => handleRemoveClick(i)}>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-6 h-6">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                </svg>
+                                                            </button>}
+                                                        </div>
                                                     </div>
-                                                    </div>
-                                                    
+
                                                 )
                                             })}
                                         </div>
@@ -1317,26 +1354,30 @@ export default function Register() {
     };
 
     return (
-        <div>{error && (
-            <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute z-10 top-5 left-5 mb-4"
-                role="alert"
-            >
-                <strong className="font-bold">Error! {" "}</strong>
-                <span className="block sm:inline">Please fill all records.</span>
-                <span onClick={() => setError(false)} className="top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
-                    close
-                </span>
-            </div>
-        )}
-            <div className="flex items-center justify-center">
-                <div className="w-full px-8">
-                    <div className="mt-4 mx-4 text-xs text-indigo-700 bg-indigo-700 bg-opacity-20 px-4 py-2 w-28 rounded-full">
-                        {step}/7 Completed
+        <>
+        {loading ? <div>loading view...</div> : (
+            <div>{error && (
+                <div
+                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute z-10 top-5 left-5 mb-4"
+                    role="alert"
+                >
+                    <strong className="font-bold">Error! {" "}</strong>
+                    <span className="block sm:inline">Please fill all records.</span>
+                    <span onClick={() => setError(false)} className="top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
+                        close
+                    </span>
+                </div>
+            )}
+                <div className="flex items-center justify-center">
+                    <div className="w-full px-8">
+                        <div className="mt-4 mx-4 text-xs text-indigo-700 bg-indigo-700 bg-opacity-20 px-4 py-2 w-28 rounded-full">
+                            {step}/7 Completed
+                        </div>
+                        {forms(step)}
                     </div>
-                    {forms(step)}
                 </div>
             </div>
-        </div>
+        )}
+        </>
     )
 }

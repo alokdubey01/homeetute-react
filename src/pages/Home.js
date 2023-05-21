@@ -1,7 +1,5 @@
 import Navbar from '../components/Navbar';
-import { CheckIcon } from '@heroicons/react/20/solid'
-import { Link, useNavigate, Navigate } from "react-router-dom";
-import { GoLocation } from 'react-icons/go'
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { collection, getDoc, doc, getDocs, query, where, deleteDoc } from "firebase/firestore";
 import db from "../firebase";
@@ -13,9 +11,9 @@ import Application from './Application';
 import Posted from '../components/loading/Posted';
 
 export default function Home() {
-    const [search, setSearch] = useState("")
-    const [filteredData, setFilteredData] = useState([])
-    const [isSearch, setIsSearch] = useState(false)
+    // const [search, setSearch] = useState("")
+    // const [filteredData, setFilteredData] = useState([])
+    // const [isSearch, setIsSearch] = useState(false)
     const [data, setData] = useState([])
     const [teachers, setTeachers] = useState([])
     const [loading, setLoading] = useState(true)
@@ -31,6 +29,20 @@ export default function Home() {
     const navigate = useNavigate()
 
     useEffect(() => {
+        const docRef = doc(db, "students", user.uid)
+        getDoc(docRef).then((doc) => {
+            const data = doc.data()
+            if (data.firstName === undefined) {
+                setLoading(false)
+                navigate("/register")
+            }
+            else {
+                setLoading(false)
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error)
+        })
+
         const getUser = async () => {
             await getDoc(doc(db, "students", user.uid))
                 .then((doc) => {
@@ -48,13 +60,13 @@ export default function Home() {
         };
         getUser();
 
-        const allUser = async () => {
-            const docRef = await getDocs(collection(db, "users"));
-            const docData = docRef.docs.map(doc => doc.data());
-            setAllUser(docData)
-            setLoading(false)
-        };
-        allUser();
+        // const allUser = async () => {
+        //     const docRef = await getDocs(collection(db, "users"));
+        //     const docData = docRef.docs.map(doc => doc.data());
+        //     setAllUser(docData)
+        //     setLoading(false)
+        // };
+        // allUser();
 
         const allTechers = async () => {
             const q = await query(collection(db, "teachers"), where("city", "==", "Lucknow"));
@@ -67,19 +79,17 @@ export default function Home() {
         allTechers();
 
         const appicationData = async () => {
-            const docRef = doc(db, 'students', user.uid);
-            const colRef = collection(docRef, 'application');
-            const q = query(colRef);
-            getDocs(q).then((querySnapshot) => {
-                const docData = querySnapshot.docs.map(doc => doc.data());
-                setPost(docData)
-                setLoading(false)
-                if (docData.length > 0) {
-                    setShowUpload(false)
-                } else {
-                    setShowUpload(true)
-                }
-            });
+            await getDoc(doc(db, 'posts', user.uid))
+                .then((doc) => {
+                    if (doc.exists()) {
+                        setPost({ ...doc.data() })
+                    } else {
+                        console.log("No such posts")
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error getting post:", error)
+                })
         };
         appicationData();
     }, []);
@@ -99,7 +109,9 @@ export default function Home() {
         });
     }
 
-    return (<div className="h-full dark:bg-gray-900">
+    return (
+        <>
+        {loading ? <div>loading view...</div> : <div className="h-full dark:bg-gray-900">
         <Navbar />
         <div>
             {showUpload && <div className="py-12 bg-gray-700 bg-opacity-30 dark:bg-opacity-30 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0 h-full" id="modal">
@@ -251,83 +263,77 @@ export default function Home() {
                                         </div>
                                     </div>
                                 </div>) : <div>
-                                    {activeTab === 1 ? <div>
-                                        {post.map((post, index) => (
-                                            <div className="p-2 sm:p-4" key={index}>
-                                                <h1 className='font-bold text-lg'>{data.firstName} {data.lastName}</h1>
-                                                <p className='text-xs text-gray-600 mt-0.5'>Posted 1 hour ago</p>
-                                                <div className='flex items-center gap-1 mt-0.5'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
-                                                        <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                                                    </svg>
-                                                    <p className='text-sm font-semibold text-gray-600'>{data.area} {","} {data.city} {","} {data.state}</p>
-                                                </div>
-                                                <Divider sx={{ marginTop: 2 }} />
-                                                <section className="my-2 md:p-4 text-gray-800">
-                                                    <div className="container grid grid-cols-1 gap-6 m-4 mx-auto md:m-0 md:grid-cols-2 xl:flex flex-wrap">
-                                                        <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
-                                                            <div className="flex items-center justify-between flex-1 p-3 gap-4">
-                                                                <p className="text-sm font-semibold">Student Name</p>
-                                                                <p className='text-sm text-indigo-600 font-semibold'>{post.firstName} {post.lastName}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
-                                                            <div className="flex items-center justify-between flex-1 p-3 gap-4">
-                                                                <p className="text-sm font-semibold">Class</p>
-                                                                <p className='text-sm text-indigo-600 font-semibold'>{post.classes}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
-                                                            <div className="flex items-center justify-between flex-1 p-3 gap-4">
-                                                                <p className="text-sm font-semibold">Subject</p>
-                                                                <p className='text-sm text-indigo-600 font-semibold'>{(index ? ',' : '') + post.subject}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
-                                                            <div className="flex items-center justify-between flex-1 p-3 gap-4">
-                                                                <p className="text-sm font-semibold">Address</p>
-                                                                <p className='text-sm text-indigo-600 font-semibold capitalize'>{post.houseNo}, {post.city}. {post.state}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
-                                                            <div className="flex items-center justify-between flex-1 p-3 gap-4">
-                                                                <p className="text-sm font-semibold">Number of Students</p>
-                                                                <p className='text-sm text-indigo-600 font-semibold'>2 Students</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
-                                                            <div className="flex items-center justify-between flex-1 p-3 gap-4">
-                                                                <p className="text-sm font-semibold">estBudget</p>
-                                                                <p className='text-sm text-indigo-600 font-semibold'>{post.budget}/month</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </section>
-                                                <Divider sx={{ marginTop: 2 }} />
-                                                <section className="my-2 md:p-4 text-gray-800">
-                                                    <div className="container m-4 mx-auto md:m-0">
-                                                        <h1 className='font-semibold text-base mb-2'>Description:</h1>
-                                                        <p className="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                                            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                                            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                                            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                                    </div>
-                                                </section>
-                                                <Divider sx={{ marginTop: 2 }} />
-                                                <section className="my-2 md:p-4 text-gray-800">
-                                                    <div className="container m-4 mx-auto md:m-0">
-                                                        <h1 className='font-semibold text-base mb-2'>Activity on the post:</h1>
-                                                        <ul>
-                                                            <li>Proposals : <span>Less than 5</span></li>
-                                                            <li>Invites : <span> 3 </span></li>
-                                                            <li>Hired : <span> 0 </span></li>
-                                                        </ul>
-                                                    </div>
-                                                </section>
+                                    {activeTab === 1 ?
+                                        <div className="p-2 sm:p-4">
+                                            <h1 className='font-bold text-lg'>{post.firstName} {post.lastName}</h1>
+                                            <p className='text-xs text-gray-600 mt-0.5'>Posted 1 hour ago</p>
+                                            <div className='flex items-center gap-1 mt-0.5'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
+                                                    <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                                                </svg>
+                                                <p className='text-sm font-semibold text-gray-600'>{post.area} {","} {post.city} {","} {post.state}</p>
                                             </div>
-                                        ))}
-                                    </div> : null}
+                                            <Divider sx={{ marginTop: 2 }} />
+                                            <section className="my-2 md:p-4 text-gray-800">
+                                                <div className="container grid grid-cols-1 gap-6 m-4 mx-auto md:m-0 md:grid-cols-2 xl:flex flex-wrap">
+                                                    <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
+                                                        <div className="flex items-center justify-between flex-1 p-3 gap-4">
+                                                            <p className="text-sm font-semibold">Student Name</p>
+                                                            <p className='text-sm text-indigo-600 font-semibold'>{post.firstName} {post.lastName}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
+                                                        <div className="flex items-center justify-between flex-1 p-3 gap-4">
+                                                            <p className="text-sm font-semibold">Class</p>
+                                                            <p className='text-sm text-indigo-600 font-semibold'>{post.classes}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
+                                                        <div className="flex items-center justify-between flex-1 p-3 gap-4">
+                                                            <p className="text-sm font-semibold">Subject</p>
+                                                            {/* <p className='text-sm text-indigo-600 font-semibold'>{(index ? ',' : '') + post.subject}</p> */}
+                                                            <p className='text-sm text-indigo-600 font-semibold'>{post.subject}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
+                                                        <div className="flex items-center justify-between flex-1 p-3 gap-4">
+                                                            <p className="text-sm font-semibold">Address</p>
+                                                            <p className='text-sm text-indigo-600 font-semibold capitalize'>{post.houseNo}, {post.city}. {post.state}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
+                                                        <div className="flex items-center justify-between flex-1 p-3 gap-4">
+                                                            <p className="text-sm font-semibold">Number of Students</p>
+                                                            <p className='text-sm text-indigo-600 font-semibold'>2 Students</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800">
+                                                        <div className="flex items-center justify-between flex-1 p-3 gap-4">
+                                                            <p className="text-sm font-semibold">estBudget</p>
+                                                            <p className='text-sm text-indigo-600 font-semibold'>{post.budget}/month</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <Divider sx={{ marginTop: 2 }} />
+                                            <section className="my-2 md:p-4 text-gray-800">
+                                                <div className="container m-4 mx-auto md:m-0">
+                                                    <h1 className='font-semibold text-base mb-2'>Description:</h1>
+                                                    <p className="text-sm">{post.description}</p>
+                                                </div>
+                                            </section>
+                                            <Divider sx={{ marginTop: 2 }} />
+                                            <section className="my-2 md:p-4 text-gray-800">
+                                                <div className="container m-4 mx-auto md:m-0">
+                                                    <h1 className='font-semibold text-base mb-2'>Activity on the post:</h1>
+                                                    <ul>
+                                                        <li>Proposals : <span>Less than 5</span></li>
+                                                        <li>Invites : <span> 3 </span></li>
+                                                        <li>Hired : <span> 0 </span></li>
+                                                    </ul>
+                                                </div>
+                                            </section>
+                                        </div> : null}
                                     {activeTab === 2 ? <div className="p-2 sm:p-4">
                                         <div className='inline justify-between'>
                                             {teachers.map((teacher) => (
@@ -482,11 +488,6 @@ export default function Home() {
                                         <section className="justify-start mt-4">
                                             <div className="justify-between flex items-center text-base font-semibold">
                                                 <span>About the student</span>
-                                                <div className='border-2 rounded-full p-1 hover:bg-indigo-700 hover:bg-opacity-30 cursor-pointer'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                                    </svg>
-                                                </div>
                                             </div>
                                             <div className="flex flex-column mt-4">
                                                 <div>
@@ -549,5 +550,7 @@ export default function Home() {
             </div>
         </div >
     </div >
+    }
+        </>
     )
 }

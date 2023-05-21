@@ -12,6 +12,8 @@ import Editpost from './pages/Editpost';
 import Profile from './pages/Profile';
 import Application from "./pages/Application";
 import Chat from "./pages/Chat";
+import User from "./pages/User";
+import UpdateProfile from "./pages/Update";
 
 function App() {
   return (
@@ -22,14 +24,16 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Home />} />
             <Route path="/student/application" element={<Application />} />
+            <Route path="/user" element={< User />} />
             <Route path="/chat" element={< Chat />} />
+            <Route path="/profile" element={< UpdateProfile />} />
             {/* <Route path="/student/post/edit" element={< Editpost />} /> */}
           </Route>
           <Route path="*" element={<Error />} />
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/teacher/:id" element={<Profile />} />
-            <Route path="/add" element={< Editpost />} />
+          <Route path="/add" element={< Editpost />} />
           {/* <Route path="/teacher/:uid" element={<Profile />} /> */}
         </Routes>
       </Router>

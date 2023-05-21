@@ -17,15 +17,17 @@ export default function Application() {
     const [open, setOpen] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [houseNo, setHouseNo] = useState('512, Naubasta Kala');
+    const [houseNo, setHouseNo] = useState('');
     const [area, setArea] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-    const [classes, setClasses] = useState('Class 10');
-    const [subject, setSubject] = useState(["Sciecnce", "Maths", "English"]);
-    const [budget, setBudget] = useState('3500');
-    const [hours, setHours] = useState('2');
+    const [classes, setClasses] = useState();
+    const [subject, setSubject] = useState([]);
+    const [budget, setBudget] = useState('');
+    const [hours, setHours] = useState('');
     const [description, setDescription] = useState('');
+    const [dataSend, setDataSend] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const { user } = useAuth();
 
@@ -60,11 +62,14 @@ export default function Application() {
             hours,
             description
         }
-        const docRef = doc(db, 'students', user.uid);
-        const colRef = collection(docRef, 'application');
-        addDoc(colRef, data)
+        setLoading(true);
+        const docRef = doc(db, 'posts', user.uid);
+        setDoc(docRef, data)
             .then(() => {
+                setDataSend(true);
                 console.log('Application submitted successfully');
+                setLoading(false);
+                window.location.reload();
             }
             )
             .catch((error) => {
@@ -418,7 +423,23 @@ export default function Application() {
                         </div>
                     </div>
                 </div>}
-                <button onClick={postApplication} className="bg-blue-500 float-right p-2 text-sm text-white font-bold rounded mt-4">Submit Application</button>
+                {/* <button onClick={postApplication} className="bg-blue-500 float-right p-2 text-sm text-white font-bold rounded mt-4">Submit Application</button> */}
+                {!dataSend &&
+                    <div className="flex justify-center items-center mt-4">
+                        <button
+                            className="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="button"
+                            disabled={loading}
+                            onClick={postApplication}
+                        >
+                            {loading ? <div className="flex items-center">
+                                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                loading
+                            </div> : 'Submit'}
+                        </button>
+                    </div>}
             </div>
         </Fragment>
     )

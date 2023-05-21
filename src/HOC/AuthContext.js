@@ -48,5 +48,4 @@ export function AuthProvider({ children }) {
       {!loading ? children : <div>Loading...</div>}
     </authContext.Provider>
   )
-
 }

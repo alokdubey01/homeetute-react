@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import useAuth from '../HOC/AuthContext'
 import { auth } from '../firebase'
 import db from '../firebase'
 import { signInWithPhoneNumber, RecaptchaVerifier } from 'firebase/auth'
@@ -239,7 +238,7 @@ export default function Login() {
           <div className="mb-8">
             <h1 className="my-3 text-xl font-semibold">Let's start now</h1>
             <p className="text-sm text-slate-500 dark:text-gray-400">
-              We'll send you a one-time-password (OTP) to your mobile number.
+              We'll send you an one-time-password (OTP) to your mobile number.
             </p>
           </div>
           <form

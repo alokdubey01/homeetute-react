@@ -70,11 +70,8 @@ export default function Profile() {
     setUid(id)
     const getData = async () => {
       await getDoc(doc(db, "teachers", uid)).then((doc) => {
-        console.log("it will run")
-        console.log(id)
         if (doc.exists()) {
           setData({ ...doc.data() });
-          console.log(doc.data());
         } else {
           console.log("No such document!");
         }
