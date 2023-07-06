@@ -2,232 +2,226 @@ import React from 'react'
 import { Navigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { BsBook } from 'react-icons/bs'
-import Corousel from '../components/Corousel'
 import { Link } from 'react-router-dom'
 import girl from "../images/girl.svg"
 // import Cookie from '../components/Cookie'
+import Highlights from "../components/Welcome/Highlights"
 import { Helmet } from 'react-helmet'
 import useAuth from '../HOC/AuthContext'
+import Browse from '../components/Welcome/Browse'
+import Testimonial from '../components/Welcome/Testimonial'
+import Footer from './Footer'
 
 export default function Welcome() {
     // const [cookie, setCookie] = useState(false)
-    const {user} = useAuth()
+    const { user } = useAuth()
 
     return (
         <>
             {user ? <Navigate to="/home" /> : (
                 <div style={{ backgroundColor: "#f9fbfc", height: "100vh" }}>
-                <Helmet>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" />
-            <link
-                href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Mitr:wght@400&family=Patua+One&display=swap"
-                rel="stylesheet"
-            />
-            <link
-                rel="stylesheet"
-                href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700"
-            />
-            <link
-                rel="stylesheet"
-                href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-            />
-            <link
-                rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-            />
-            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-        </Helmet>
-                <Navbar />
+                    <Helmet>
+                        <link rel="preconnect" href="https://fonts.googleapis.com" />
+                        <link rel="preconnect" href="https://fonts.gstatic.com" />
+                        <link
+                            href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Mitr:wght@400&family=Patua+One&display=swap"
+                            rel="stylesheet"
+                        />
+                        <link
+                            rel="stylesheet"
+                            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700"
+                        />
+                        <link
+                            rel="stylesheet"
+                            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+                        />
+                        <link
+                            rel="stylesheet"
+                            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+                        />
+                        <link href="https://fonts.googleapis.com/css2?family=Ysabeau+SC:wght@500&display=swap" rel="stylesheet"></link>
+                        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                    </Helmet>
+                    <Navbar />
 
-                <div style={{zIndex: 99}}>
-                    {/* {cookie && <Cookie/>} */}
-                </div>
-                <section className="grid grid-cols-2 items-center">
-                    <div className="col-span-1">
-                        <div
-                            className="text-3xl mx-auto w-4/6 font-semibold capitalize leading-[1.4]"
-                            style={{ fontFamily: "mitr" }}
-                        >
-                            Get the best quality education from the comfort of your Home
-                        </div>
-                        <div className="mx-auto w-4/6 text-sm mt-4 leading-5">
-                            We provides the best teacher for your child at your Welcome and area, who can help to sharp your child.
-                        </div>
-                        <div className="flex gap-6 items-center mt-6 mx-auto w-4/6">
-                            <Link
-                                className="inline-block py-1.5 px-2 border-[#ffcf59] bg-[#ffcf59] rounded-full hover:bg-gray-200"
-                                href="/"
+                    <div style={{ zIndex: 99 }}>
+                        {/* {cookie && <Cookie/>} */}
+                    </div>
+                    <section className="grid grid-cols-2 items-center">
+                        <div className="col-span-1">
+                            <div
+                                className="text-3xl mx-auto w-4/6 font-semibold capitalize leading-[1.4]"
+                                style={{ fontFamily: "mitr" }}
                             >
-                                <div className="inline-block px-2 font-medium text-sm rounded-full items-center relative cursor-pointer whitespace-nowrap">
-                                    Search a Teacher
-                                </div>
-                            </Link>
-                            <button className="flex text-sm items-center gap-1 font-medium border-2 px-2 py-1.5 border-[#525fe1] hover:bg-[#525fe1] rounded-full">
-                                <BsBook className="text-[#525fe1] text-3xl items-center hover:text-white" size={20} /> Join as
-                                Techer
-                            </button>
-                        </div>
-                    </div>
-                    <div className="col-span-1 ml-auto mr-4">
-                        <img loading="eager" src={girl} alt="girl" width={400} height={400} />
-                    </div>
-                </section>
-                {/* Landing Page Ends */}
-
-                {/* Banner */}
-                <section className="bg-[#525fe1] mt-6 h-32 w-full">
-                    <div className="flex items-center justify-between h-full w-1/2 mx-auto">
-                        <div className="text-white text-2xl font-semibold">
-                            2K + <br />
-                            <span className="text-xs">Happy Students</span>
-                        </div>
-                        <div className="border border-r-white h-1/2 rounded-full" />
-                        <div className="text-white text-2xl font-semibold">
-                            200 + <br />
-                            <span className="text-xs">Happy Teachers</span>
-                        </div>
-                        <div className="border border-r-white h-1/2 rounded-full" />
-                        <div className="text-white text-2xl font-semibold">
-                            4 + <br />
-                            <span className="text-xs">Cities</span>
-                        </div>
-                        <div className="border border-r-white h-1/2 rounded-full" />
-                        <div className="text-white text-2xl font-semibold">
-                            24/7 <br />
-                            <span className="text-xs">Support</span>
-                        </div>
-                    </div>
-                </section>
-                {/* Banner Ends */}
-
-                {/* Category Search */}
-                <section className="category-search bg-[#f6fbfc] pt-12">
-                    <div className="text-center justify-center items-center">
-                        <div
-                            className="text-2xl mx-auto w-4/6 font-semibold capitalize leading-[1.4]"
-                            style={{ fontFamily: "mitr" }}
-                        >
-                            Browse Teachers by categories
-                        </div>
-                        <div className="flex flex-wrap justify-center w-1/2 mx-auto mt-2 text-sm">
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque,
-                            quibusdam. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            earum totam aspernatur, perferendis aperiam.
-                        </div>
-                        <div className="container-xl mt-4">
-                            <Corousel />
-                        </div>
-                    </div>
-                </section>
-                {/* End Category Search */}
-
-                {/* Highlights */}
-                <section className="bg-[#f6fbfc]">
-                    <div className="container px-6 py-12 mx-auto">
-                        <div className="grid items-center gap-4 xl:grid-cols-5">
-                            <div className="max-w-2xl mx-auto my-8 space-y-4 text-center xl:col-span-2 xl:text-left">
-                                <h2 className="text-2xl font-bold">
-                                    How it works
-                                </h2>
-                                <p className="text-gray-400">
-                                    Connect with the perfect tutor at your area
-                                </p>
+                                Get the best quality education from the comfort of your Home
                             </div>
-                            <div className="p-6 xl:col-span-3">
-                                <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="grid content-center gap-4">
-                                        <div className="card border border-gray-300">
-                                            <span className="icon">
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path d="M14.5 3.5C14.5 3.5 14.5 5.5 12 5.5C9.5 5.5 9.5 3.5 9.5 3.5H7.5L4.20711 6.79289C3.81658 7.18342 3.81658 7.81658 4.20711 8.20711L6.5 10.5V20.5H17.5V10.5L19.7929 8.20711C20.1834 7.81658 20.1834 7.18342 19.7929 6.79289L16.5 3.5H14.5Z" />
-                                                </svg>
-                                            </span>
-                                            <h4>Products</h4>
-                                            <p>
-                                                Standard chunk of Lorem Ipsum used since the 1500s is
-                                                showed below for those interested.
-                                            </p>
+                            <div className="mx-auto w-4/6 text-lg mt-2 leading-5" style={{ fontFamily: "Ysabeau SC" }}>
+                                We provides the best teacher for your child at your city and area, who can help to sharp your child.
+                            </div>
+                            <div className="flex gap-6 items-center mt-6 mx-auto w-4/6">
+                                <Link
+                                    className="inline-block py-1.5 px-2 border-[#ffcf59] bg-[#ffcf59] rounded-full hover:bg-gray-200"
+                                    href="/"
+                                >
+                                    <div className="inline-block px-2 font-medium text-sm rounded-full items-center relative cursor-pointer whitespace-nowrap">
+                                        Search a Teacher
+                                    </div>
+                                </Link>
+                                <button className="flex text-sm items-center gap-1 font-medium border-2 px-2 py-1.5 border-[#525fe1] hover:bg-[#525fe1] rounded-full">
+                                    <BsBook className="text-[#525fe1] text-3xl items-center hover:text-white" size={20} /> Join as
+                                    Techer
+                                </button>
+                            </div>
+                        </div>
+                        <div className="col-span-1 ml-auto mr-4">
+                            <img loading="eager" src={girl} alt="girl" width={400} height={400} />
+                        </div>
+                    </section>
+                    {/* Landing Page Ends */}
+
+                    {/* Category Search */}
+                    <section className="category-search bg-[#f6fbfc] pt-12">
+                        <div className="text-center justify-center items-center">
+                            <div
+                                className="text-3xl mx-auto w-4/6 font-semibold capitalize leading-[1.4]"
+                                style={{ fontFamily: "mitr" }}
+                            >
+                                Browse Teachers by <span className='text-indigo-700'>subject</span>
+                            </div>
+                            <div className="flex flex-wrap justify-center w-1/2 mx-auto mt-2 text-base" style={{ fontFamily: "Ysabeau SC" }}>
+                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque,
+                                quibusdam. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                earum totam aspernatur, perferendis aperiam.
+                            </div>
+                            <div className="container-xl mt-4">
+                                <Browse />
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <div className="dark:bg-gray-900">
+                        <section className="mx-auto container py-20 ">
+                            <div className="flex justify-center items-center flex-col">
+                                <div className="lg:text-6xl md:text-5xl text-4xl font-black leading-10 text-center text-gray-800 dark:text-white">
+                                    <h1 className="text-3xl mx-auto font-semibold capitalize leading-[1.4]"
+                                        style={{ fontFamily: "mitr" }}>What make us <span className="text-indigo-700">different</span> ?</h1>
+                                </div>
+                                <div className="pt-24 grid lg:grid-cols-3 md:grid-cols-2 justify-center items-center xl:gap-y-16 gap-y-20 gap-x-16 lg:gap-x-20 xl:gap-x-0 lg:px-10 xl:px-0">
+                                    <div className="py-6 xl:px-4 rounded xl:w-96 w-60 flex justify-center items-center flex-col">
+                                        <div className="mb-6">
+                                            <svg className width={32} height={32} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M24 13.3333H32L28 8L24 13.3333ZM24 18.6667H32L28 24L24 18.6667Z" fill="#C7D2FE" />
+                                                <path d="M1.33333 0H9.33333V32H1.33333C0.979711 32 0.640572 31.8595 0.390523 31.6095C0.140475 31.3594 0 31.0203 0 30.6667V1.33333C0 0.979711 0.140475 0.640572 0.390523 0.390523C0.640572 0.140475 0.979711 0 1.33333 0Z" fill="#818CF8" />
+                                                <path d="M12 0H20C20.3536 0 20.6928 0.140475 20.9428 0.390523C21.1929 0.640572 21.3333 0.979711 21.3333 1.33333V30.6667C21.3333 31.0203 21.1929 31.3594 20.9428 31.6095C20.6928 31.8595 20.3536 32 20 32H12V0Z" fill="#6366F1" />
+                                            </svg>
                                         </div>
-                                        <div className="card border border-gray-300">
-                                            <span className="icon">
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path d="M14.5 3.5C14.5 3.5 14.5 5.5 12 5.5C9.5 5.5 9.5 3.5 9.5 3.5H7.5L4.20711 6.79289C3.81658 7.18342 3.81658 7.81658 4.20711 8.20711L6.5 10.5V20.5H17.5V10.5L19.7929 8.20711C20.1834 7.81658 20.1834 7.18342 19.7929 6.79289L16.5 3.5H14.5Z" />
-                                                </svg>
-                                            </span>
-                                            <h4>Products</h4>
-                                            <p>
-                                                Standard chunk of Lorem Ipsum used since the 1500s is
-                                                showed below for those interested.
-                                            </p>
+                                        <div className="text-gray-800 dark:text-white text-2xl font-semibold text-center">
+                                            <h2 style={{ fontFamily: "Ysabeau SC" }}>Best Tutor</h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 mt-2 text-lg text-center ">
+                                            <p className='text-base' style={{ fontFamily: "Ysabeau SC" }}>Workflows can help streamline and automate repeatable business tasks.</p>
                                         </div>
                                     </div>
-                                    <div className="grid content-center gap-4">
-                                        <div className="card border border-gray-300">
-                                            <span className="icon">
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path d="M14.5 3.5C14.5 3.5 14.5 5.5 12 5.5C9.5 5.5 9.5 3.5 9.5 3.5H7.5L4.20711 6.79289C3.81658 7.18342 3.81658 7.81658 4.20711 8.20711L6.5 10.5V20.5H17.5V10.5L19.7929 8.20711C20.1834 7.81658 20.1834 7.18342 19.7929 6.79289L16.5 3.5H14.5Z" />
-                                                </svg>
-                                            </span>
-                                            <h4>Products</h4>
-                                            <p>
-                                                Standard chunk of Lorem Ipsum used since the 1500s is
-                                                showed below for those interested.
-                                            </p>
+                                    <div className="py-6 xl:px-4 rounded xl:w-96 w-60 flex justify-center items-center flex-col">
+                                        <div className="mb-6">
+                                            <svg width={32} height={32} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M5.33325 1.33337H30.6666L26.6666 9.33337H1.33325L5.33325 1.33337Z" fill="#818CF8" />
+                                                <path d="M5.33325 12H30.6666L26.6666 20H1.33325L5.33325 12Z" fill="#6366F1" />
+                                                <path d="M5.33325 22.6667H30.6666L26.6666 30.6667H1.33325L5.33325 22.6667Z" fill="#C7D2FE" />
+                                            </svg>
                                         </div>
-                                        <div className="card border border-gray-300">
-                                            <span className="icon">
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path d="M14.5 3.5C14.5 3.5 14.5 5.5 12 5.5C9.5 5.5 9.5 3.5 9.5 3.5H7.5L4.20711 6.79289C3.81658 7.18342 3.81658 7.81658 4.20711 8.20711L6.5 10.5V20.5H17.5V10.5L19.7929 8.20711C20.1834 7.81658 20.1834 7.18342 19.7929 6.79289L16.5 3.5H14.5Z" />
-                                                </svg>
-                                            </span>
-                                            <h4>Products</h4>
-                                            <p>
-                                                Standard chunk of Lorem Ipsum used since the 1500s is
-                                                showed below for those interested.
-                                            </p>
+                                        <div className="text-gray-800 dark:text-white text-2xl font-semibold text-center">
+                                            <h2 style={{ fontFamily: "Ysabeau SC" }}>Best Curriculam</h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 mt-2 text-lg text-center">
+                                            <p className='text-base' style={{ fontFamily: "Ysabeau SC" }}>A flexible software architecture is able to changes in usability requirements</p>
+                                        </div>
+                                    </div>
+                                    <div className="py-6 xl:px-4 rounded xl:w-96 w-60 flex justify-center items-center flex-col">
+                                        <div className="mb-6">
+                                            <svg width={32} height={32} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M30.6667 8.00004V2.66671C30.6667 2.31309 30.5262 1.97395 30.2762 1.7239C30.0261 1.47385 29.687 1.33337 29.3334 1.33337H2.66671C2.31309 1.33337 1.97395 1.47385 1.7239 1.7239C1.47385 1.97395 1.33337 2.31309 1.33337 2.66671V8.00004H30.6667Z" fill="#6366F1" />
+                                                <path d="M1.33337 10.6667V29.3334C1.33337 29.687 1.47385 30.0262 1.7239 30.2762C1.97395 30.5263 2.31309 30.6667 2.66671 30.6667H9.33337V10.6667H1.33337Z" fill="#C7D2FE" />
+                                                <path d="M12 30.6667H29.3333C29.687 30.6667 30.0261 30.5263 30.2761 30.2762C30.5262 30.0262 30.6667 29.687 30.6667 29.3334V10.6667H12V30.6667Z" fill="#818CF8" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-800 dark:text-white text-2xl font-semibold text-center">
+                                            <h2 style={{ fontFamily: "Ysabeau SC" }}>Best Price</h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 mt-2 text-lg text-center">
+                                            <p className='text-base' style={{ fontFamily: "Ysabeau SC" }}>Good usability can improve a new software chances of successful adoption.</p>
+                                        </div>
+                                    </div>
+                                    <div className="py-6 xl:px-4 rounded xl:w-96 w-60 flex justify-center items-center flex-col">
+                                        <div className="mb-6">
+                                            <svg width={32} height={32} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M28.0001 32H16.0001C15.6465 32 15.3073 31.8595 15.0573 31.6095C14.8072 31.3594 14.6667 31.0203 14.6667 30.6667V28C14.6667 27.6464 14.8072 27.3073 15.0573 27.0572C15.3073 26.8072 15.6465 26.6667 16.0001 26.6667H28.0001C28.3537 26.6667 28.6928 26.8072 28.9429 27.0572C29.1929 27.3073 29.3334 27.6464 29.3334 28V30.6667C29.3334 31.0203 29.1929 31.3594 28.9429 31.6095C28.6928 31.8595 28.3537 32 28.0001 32Z" fill="#C7D2FE" />
+                                                <path d="M28.0001 0H4.00008C3.64646 0 3.30732 0.140475 3.05727 0.390523C2.80722 0.640572 2.66675 0.979711 2.66675 1.33333V4C2.66675 4.35362 2.80722 4.69276 3.05727 4.94281C3.30732 5.19286 3.64646 5.33333 4.00008 5.33333H28.0001C28.3537 5.33333 28.6928 5.19286 28.9429 4.94281C29.1929 4.69276 29.3334 4.35362 29.3334 4V1.33333C29.3334 0.979711 29.1929 0.640572 28.9429 0.390523C28.6928 0.140475 28.3537 0 28.0001 0Z" fill="#6366F1" />
+                                                <path d="M28.0001 8H4.00008C3.64646 8 3.30732 8.14047 3.05727 8.39052C2.80722 8.64057 2.66675 8.97971 2.66675 9.33333V22.6667C2.66675 23.0203 2.80722 23.3594 3.05727 23.6095C3.30732 23.8595 3.64646 24 4.00008 24H28.0001C28.3537 24 28.6928 23.8595 28.9429 23.6095C29.1929 23.3594 29.3334 23.0203 29.3334 22.6667V9.33333C29.3334 8.97971 29.1929 8.64057 28.9429 8.39052C28.6928 8.14047 28.3537 8 28.0001 8Z" fill="#818CF8" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-800 dark:text-white text-2xl font-semibold text-center">
+                                            <h2 style={{ fontFamily: "Ysabeau SC" }}>Best Support</h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 mt-2 text-lg text-center">
+                                            <p className='text-base' style={{ fontFamily: "Ysabeau SC" }}>Smaller components are easier to maintain. Program can be divided</p>
+                                        </div>
+                                    </div>
+                                    <div className="py-6 xl:px-4 rounded xl:w-96 w-60 flex justify-center items-center flex-col">
+                                        <div className="mb-6">
+                                            <svg width={32} height={32} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6.66658 1.33331H2.66659C2.31296 1.33331 1.97382 1.47379 1.72378 1.72384C1.47373 1.97388 1.33325 2.31302 1.33325 2.66665V29.3333C1.33325 29.6869 1.47373 30.0261 1.72378 30.2761C1.97382 30.5262 2.31296 30.6666 2.66659 30.6666H6.66658V1.33331Z" fill="#C7D2FE" />
+                                                <path
+                                                    d="M9.33325 30.6666H22.6666V1.33331H9.33325V30.6666ZM15.9999 25.3333C15.6463 25.3333 15.3072 25.1928 15.0571 24.9428C14.8071 24.6927 14.6666 24.3536 14.6666 24C14.6666 23.6464 14.8071 23.3072 15.0571 23.0572C15.3072 22.8071 15.6463 22.6666 15.9999 22.6666C16.3535 22.6666 16.6927 22.8071 16.9427 23.0572C17.1928 23.3072 17.3333 23.6464 17.3333 24C17.3333 24.3536 17.1928 24.6927 16.9427 24.9428C16.6927 25.1928 16.3535 25.3333 15.9999 25.3333ZM15.9999 6.66665C16.3535 6.66665 16.6927 6.80712 16.9427 7.05717C17.1928 7.30722 17.3333 7.64636 17.3333 7.99998C17.3333 8.3536 17.1928 8.69274 16.9427 8.94279C16.6927 9.19284 16.3535 9.33331 15.9999 9.33331C15.6463 9.33331 15.3072 9.19284 15.0571 8.94279C14.8071 8.69274 14.6666 8.3536 14.6666 7.99998C14.6666 7.64636 14.8071 7.30722 15.0571 7.05717C15.3072 6.80712 15.6463 6.66665 15.9999 6.66665ZM15.9999 14.6666C16.3535 14.6666 16.6927 14.8071 16.9427 15.0572C17.1928 15.3072 17.3333 15.6464 17.3333 16C17.3333 16.3536 17.1928 16.6927 16.9427 16.9428C16.6927 17.1928 16.3535 17.3333 15.9999 17.3333C15.6463 17.3333 15.3072 17.1928 15.0571 16.9428C14.8071 16.6927 14.6666 16.3536 14.6666 16C14.6666 15.6464 14.8071 15.3072 15.0571 15.0572C15.3072 14.8071 15.6463 14.6666 15.9999 14.6666Z"
+                                                    fill="#818CF8"
+                                                />
+                                                <path d="M29.3333 1.33331H25.3333V30.6666H29.3333C29.6869 30.6666 30.026 30.5262 30.2761 30.2761C30.5261 30.0261 30.6666 29.6869 30.6666 29.3333V2.66665C30.6666 2.31302 30.5261 1.97388 30.2761 1.72384C30.026 1.47379 29.6869 1.33331 29.3333 1.33331Z" fill="#6366F1" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-800 dark:text-white text-2xl font-semibold text-center">
+                                            <h2 style={{ fontFamily: "Ysabeau SC" }}>Best Opportunity</h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 mt-2 text-lg text-center">
+                                            <p className='text-base' style={{ fontFamily: "Ysabeau SC" }}>Component-based design makes front-end web development faster.</p>
+                                        </div>
+                                    </div>
+                                    <div className="py-6 xl:px-4 rounded xl:w-96 w-60 flex justify-center items-center flex-col">
+                                        <div className="mb-6">
+                                            <svg width={32} height={32} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M15.2079 0.175992L0.781281 6.91599C0.68372 6.96073 0.601072 7.03256 0.543175 7.12294C0.485278 7.21331 0.454572 7.31842 0.454712 7.42575C0.454853 7.53308 0.485833 7.63811 0.543966 7.72833C0.6021 7.81856 0.684936 7.89017 0.782614 7.93466L15.3226 14.6253C15.7519 14.8227 16.2479 14.8227 16.6773 14.6253L31.2173 7.93466C31.315 7.8903 31.3979 7.81879 31.4562 7.72865C31.5145 7.6385 31.5456 7.53351 31.5459 7.42618C31.5461 7.31885 31.5156 7.2137 31.4578 7.12325C31.4 7.0328 31.3175 6.96086 31.2199 6.91599L16.792 0.175992C16.544 0.0601174 16.2736 6.10352e-05 15.9999 6.10352e-05C15.7263 6.10352e-05 15.4559 0.0601174 15.2079 0.175992Z"
+                                                    fill="#818CF8"
+                                                />
+                                                <path
+                                                    d="M31.22 15.568L28.24 14.176C28.0266 14.0763 27.794 14.0243 27.5584 14.0236C27.3229 14.0229 27.09 14.0735 26.876 14.172L16.6773 18.8653C16.4649 18.963 16.2338 19.0136 16 19.0136C15.7662 19.0136 15.5351 18.963 15.3227 18.8653L5.12267 14.172C4.90885 14.0737 4.67621 14.0232 4.4409 14.0239C4.20559 14.0246 3.97324 14.0765 3.76001 14.176L0.780006 15.568C0.682503 15.6128 0.599949 15.6848 0.54217 15.7752C0.48439 15.8657 0.453823 15.9708 0.454103 16.0782C0.454384 16.1855 0.485502 16.2905 0.543754 16.3806C0.602006 16.4708 0.684937 16.5423 0.782674 16.5866L15.3227 23.276C15.535 23.3742 15.7661 23.4251 16 23.4251C16.2339 23.4251 16.465 23.3742 16.6773 23.276L31.2173 16.5866C31.3151 16.5423 31.398 16.4708 31.4563 16.3806C31.5145 16.2905 31.5456 16.1855 31.5459 16.0782C31.5462 15.9708 31.5156 15.8657 31.4578 15.7752C31.4001 15.6848 31.3175 15.6128 31.22 15.568Z"
+                                                    fill="#C7D2FE"
+                                                />
+                                                <path
+                                                    d="M31.22 24.144L28.24 22.752C28.0266 22.6522 27.794 22.6002 27.5585 22.5995C27.3229 22.5989 27.09 22.6495 26.876 22.748L16.6774 27.44C16.4649 27.5376 16.2338 27.5882 16 27.5882C15.7662 27.5882 15.5351 27.5376 15.3227 27.44L5.12269 22.7466C4.90887 22.6484 4.67623 22.5978 4.44091 22.5985C4.2056 22.5992 3.97326 22.6511 3.76002 22.7506L0.780019 24.144C0.682891 24.189 0.600708 24.2609 0.543205 24.3512C0.485701 24.4415 0.455288 24.5464 0.455568 24.6535C0.455849 24.7605 0.486813 24.8653 0.544789 24.9553C0.602765 25.0453 0.685324 25.1168 0.782686 25.1613L15.3227 31.852C15.752 32.0493 16.248 32.0493 16.6774 31.852L31.2174 25.1613C31.3147 25.1168 31.3973 25.0453 31.4553 24.9553C31.5132 24.8653 31.5442 24.7605 31.5445 24.6535C31.5448 24.5464 31.5143 24.4415 31.4568 24.3512C31.3993 24.2609 31.3172 24.189 31.22 24.144Z"
+                                                    fill="#6366F1"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-800 dark:text-white text-2xl font-semibold text-center">
+                                            <h2 style={{ fontFamily: "Ysabeau SC" }}>Best Guidance</h2>
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-300 mt-2 text-lg text-center">
+                                            <p className='text-base' style={{ fontFamily: "Ysabeau SC" }}>No more running around looking for things.When you write things and plan.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </section>
                     </div>
-                </section>
-            </div>
+
+
+                    <Highlights />
+                    <Testimonial />
+                    <Footer />
+                </div>
             )}
         </>
     )

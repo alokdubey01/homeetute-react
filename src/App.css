@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand');
+@import "react-alice-carousel/lib/alice-carousel.css";
 
 .scrollbar-w-2::-webkit-scrollbar {
   width: 0.25rem;

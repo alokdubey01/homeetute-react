@@ -47,9 +47,9 @@ export default function UpdateProfile() {
 
     const profilePhoto = (e) => {
         setProfileImage(URL.createObjectURL(e.target.files[0]))
-        // const file = e.target.files[0]
+        const file = e.target.files[0]
 
-        const storageRef = ref(storage, `students/${user.uid}/profile`)
+        const storageRef = ref(storage, `students/${user.uid}/profile/${file.name}`)
         const uploadTask = uploadBytesResumable(storageRef, profileImage, 'data_url')
         uploadTask.on('state_changed', (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -59,7 +59,7 @@ export default function UpdateProfile() {
         }, () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 console.log('File available at', downloadURL)
-                const docRef = doc(db, "teachers", user.uid)
+                const docRef = doc(db, "students", user.uid)
                 setDoc(docRef, {
                     image: downloadURL
                 }, { merge: true })
@@ -67,29 +67,41 @@ export default function UpdateProfile() {
         })
     }
 
-    const coverPhoto = (e) => {
+    const updateCoverImage = async (e) => {
         setCoverImage(URL.createObjectURL(e.target.files[0]))
         const file = e.target.files[0]
-        console.log(file)
-    }
 
-    const updateCoverImage = async () => {
-        const storageRef = ref(storage, `students/${user.uid}/cover`)
-        const uploadTask = uploadBytesResumable(storageRef, coverImage, 'data_url')
-        uploadTask.on('state_changed', (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            console.log('Upload is ' + progress + '% done')
-        }, (error) => {
-            console.log(error)
-        }, () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                console.log('File available at', downloadURL)
-                const docRef = doc(db, "teachers", user.uid)
-                setDoc(docRef, {
-                    cover: downloadURL
-                }, { merge: true })
-            })
-        })
+        const storageRef = ref(storage, `students/${user.uid}/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log("Upload is " + progress + "% done");
+                switch (snapshot.state) {
+                    case "paused":
+                        console.log("Upload is paused");
+                        break;
+                    case "running":
+                        console.log("Upload is running");
+                        break;
+                    default:
+                        break;
+                }
+            },
+            (error) => {
+                console.log(error);
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log("File available at", downloadURL);
+                    const docRef = doc(db, "students", user.uid);
+                    setDoc(docRef, { coverImage: downloadURL }, { merge: true });
+                });
+            }
+        );
     }
 
     const pages = (step) => {
@@ -108,7 +120,7 @@ export default function UpdateProfile() {
                     profileImage={profileImage}
                     profilePhoto={profilePhoto}
                     coverImage={coverImage}
-                    coverPhoto={coverPhoto}
+                    updateCoverImage={updateCoverImage}
                     data={data}
                 />
             case 6:
@@ -273,22 +285,84 @@ function PricingPlan() {
             <p className='text-sm mt-1 text-gray-500'>Choose a subscription for extra feature.</p>
             <div className='mt-4'>
                 <h1 className='text-xl font-bold flex items-center'>Basic Information <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 ml-4 cursor-pointer">
-                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z" />
-                    </svg>
                 </div>
                 </h1>
-                <div className='flex items-center justify-between mt-6'>
-                    <label className='text-sm font-semibold'>Name</label>
-                    <span>Anurag Thapar</span>
-                </div>
-                <div className='flex items-center justify-between mt-6'>
-                    <label className='text-sm font-semibold'>Mobile Number</label>
-                    <span>+91 9451756649</span>
-                </div>
-                <div className='flex items-center justify-between mt-6'>
-                    <label className='text-sm font-semibold'>Email Address</label>
-                    <span>anurag21@gmail.com</span>
+                <div class="bg-white dark:bg-gray-800">
+                    <div class="container px-6 py-8 mx-auto">
+                        <div class="flex flex-col items-center justify-center space-y-8 lg:-mx-4 lg:flex-row lg:items-stretch lg:space-y-0">
+                            <div class="flex flex-col w-full max-w-xs p-8 space-y-8 text-center bg-white border-2 border-gray-200 rounded-lg lg:mx-4 dark:bg-gray-800 dark:border-gray-700">
+                                <div class="flex-shrink-0">
+                                    <h2 class="inline-flex items-center text-2xl justify-center px-2 font-semibold tracking-tight text-gray-400 uppercase rounded-lg dark:bg-gray-700">
+                                        Free
+                                    </h2>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <span
+                                        class="pt-2 text-4xl font-bold text-gray-800 uppercase dark:text-gray-100"
+                                    >
+                                        0
+                                    </span>
+                                </div>
+                                <ul class="flex-1 space-y-4">
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        Up to 5 projects
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        Up to 10 collaborators
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        2Gb of storage
+                                    </li>
+                                </ul>
+
+                                <button
+                                    class="inline-flex items-center justify-center px-4 py-2 font-semibold text-black uppercase transition-colors bg-blue-50 rounded-lg focus:outline-none"
+                                >
+                                    Subscribed
+                                </button>
+                            </div>
+
+                            <div class="flex flex-col w-full max-w-xs p-8 space-y-8 text-center bg-white border-2 border-gray-200 rounded-lg lg:mx-4 dark:bg-gray-800 dark:border-gray-700">
+                                <div class="flex-shrink-0">
+                                    <h2
+                                        class="inline-flex items-center text-2xl justify-center px-2 font-semibold tracking-tight text-gray-400 uppercase rounded-lg dark:bg-gray-700"
+                                    >
+                                        Profesional
+                                    </h2>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <span
+                                        class="pt-2 text-4xl font-bold text-gray-800 uppercase dark:text-gray-100"
+                                    >
+                                        $24.90
+                                    </span>
+                                    <span class="text-gray-500 dark:text-gray-400">
+                                        /month
+                                    </span>
+                                </div>
+                                <ul class="flex-1 space-y-4">
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        Up to 10 projects
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        Up to 20 collaborators
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        10Gb of storage
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400">
+                                        Real-time collaborations
+                                    </li>
+                                </ul>
+
+                                <button
+                                    class="inline-flex items-center justify-center px-4 py-2 font-semibold text-white uppercase transition-colors bg-blue-500 rounded-lg hover:bg-blue-700 focus:outline-none"
+                                >
+                                    Start free trial
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -334,7 +408,7 @@ function CloseAccount({ logout }) {
 // grand-child components
 
 
-function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, coverPhoto }) {
+function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, updateCoverImage, data }) {
     return (
         <div className="w-full h-full">
             <Helmet>
@@ -356,16 +430,19 @@ function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, cover
                         <label htmlFor="cover-photo" className="block text-sm font-semibold leading-6 text-gray-900">
                             Cover photo
                         </label>
-                        <div className="mt-2 flex justify-center rounded-lg h-48 px-6 py-10 relative" style={{ backgroundImage: `url(${coverImage})` }}>
+                        <div className='mt-4 flex justify-center rounded-lg h-48 px-6 py-10 relative'>
                             <div className="text-center">
-                                <div className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                                <div className="flex text-xs leading-6 text-gray-600 bg-slate-600 bg-opacity-80 rounded-sm px-4 py-2 absolute top-0 right-0 hover:bg-slate-300 hover:bg-opacity-50">
+                                <div className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true">
+                                    {data.coverImage ? <div><img className='h-48 w-full absolute left-0 top-0 rounded-lg object-cover' src={data.coverImage} alt="cover" /></div> : <div><img className='h-48 w-full absolute left-0 top-0 rounded-lg object-cover' src={coverImage} alt="cover" /></div>}
+                                </div>
+                                <div className="flex text-xs leading-6 bg-slate-400 bg-opacity-60 rounded-sm px-4 py-2 top-0 right-0 relative z-auto object-fill hover:bg-slate-300 hover:bg-opacity-50">
                                     <label
                                         htmlFor="file-upload"
-                                        className="relative cursor-pointer rounded-md text-white"
+                                        className="relative flex items-center gap-2 cursor-pointer rounded-md text-white"
                                     >
+                                        <PhotoIcon className="h-4" />
                                         <span>Upload a new</span>
-                                        <input id="file-upload" accept='image/*' name="file-upload" type="file" className="sr-only" onChange={coverPhoto} />
+                                        <input id="file-upload" accept='image/*' name="file-upload" type="file" className="sr-only" onChange={updateCoverImage} />
                                     </label>
                                 </div>
                             </div>
@@ -377,14 +454,16 @@ function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, cover
                         </label>
                         <div className="mt-2 flex items-center gap-x-3">
                             <div className="mb-5 text-center flex gap-6 items-center">
-                                <div className="mx-auto w-16 h-16 border rounded-full relative bg-gray-100 shadow-inset">
-                                    
+                                <div className="mx-auto w-16 h-16 border-full rounded relativeshadow-inset">
+
                                     {profileImage ? <div>
                                         <img id="image" className="object-cover w-full h-16 rounded-full"
-                                        src={profileImage} alt="dp"
-                                    />
+                                            src={profileImage} alt="dp"
+                                        />
                                     </div> : <div>
-                                        <UserCircleIcon/>
+                                        <img id="image" className="object-cover w-full h-16 rounded-full"
+                                            src={data.image} alt="dp"
+                                        />
                                     </div>}
                                 </div>
                                 <label
@@ -409,6 +488,7 @@ function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, cover
                         name="firstname"
                         id="fname"
                         aria-labelledby='fname'
+                        placeholder={data.firstName}
                         className="w-1/2 resize-none mt-2 p-2 bg-gray-100 rounded border border-gray-200 focus:outline-indigo-600 focus:outline-1 text-sm font-medium leading-none text-gray-800 read-only:bg-slate-300"
                     />
                 </div>
@@ -419,6 +499,7 @@ function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, cover
                         name="lastname"
                         id="lname"
                         aria-labelledby='lname'
+                        placeholder={data.lastName}
                         className="w-1/2 resize-none mt-2 p-2 bg-gray-100 rounded border border-gray-200 focus:outline-indigo-600 focus:outline-1 text-sm font-medium leading-none text-gray-800 read-only:bg-slate-300"
                     />
                 </div>
@@ -431,6 +512,7 @@ function UpdateBasicInfo({ goBack, profileImage, profilePhoto, coverImage, cover
                             name="mobile"
                             id="mobile"
                             maxLength={10}
+                            placeholder={data.phoneNumber}
                             className="w-full resize-none p-1 focus:outline-none outline-none border-none text-sm font-medium leading-none text-gray-800 bg-gray-100 ml-2"
                         />
                     </div>

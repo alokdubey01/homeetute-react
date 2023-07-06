@@ -14,6 +14,7 @@ import Application from "./pages/Application";
 import Chat from "./pages/Chat";
 import User from "./pages/User";
 import UpdateProfile from "./pages/Update";
+import Help from "./pages/Help";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/teacher/:id" element={<Profile />} />
+          <Route path="/help" element={<Help />} />
           <Route path="/add" element={< Editpost />} />
           {/* <Route path="/teacher/:uid" element={<Profile />} /> */}
         </Routes>

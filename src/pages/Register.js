@@ -175,12 +175,21 @@ export default function Register() {
 
     const fileUpload = async (e) => {
         setPicture(URL.createObjectURL(e.target.files[0]))
+        const file = e.target.files[0]
 
-        const storageRef = ref(storage, `students/${user.uid}/profile`)
+        const storageRef = ref(storage, `students/${user.uid}/profile/${file.name}`)
         const uploadTask = uploadBytesResumable(storageRef, picture, 'data_url')
         uploadTask.on('state_changed', (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             console.log('Upload is ' + progress + '% done')
+            switch (snapshot.state) {
+                case "paused":
+                    console.log('Upload is paused')
+                    break;
+                case "running":
+                    console.log('Upload is running')
+                    break;
+            }
         }, (error) => {
             console.log(error)
         }, () => {

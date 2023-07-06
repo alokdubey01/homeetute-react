@@ -77,8 +77,8 @@ const navigation = {
       ],
     },
     {
-      id: 'search',
-      name: 'Category',
+      id: 'men',
+      name: 'Men',
       featured: [
         {
           name: 'New Arrivals',
@@ -96,18 +96,16 @@ const navigation = {
       ],
       sections: [
         {
-          id: 'city',
-          name: 'city',
+          id: 'clothing',
+          name: 'Clothing',
           items: [
-            // { name: 'Ahmadabad', href: '#' },
-            // { name: 'Mumbai', href: '#' },
-            // { name: 'Delhi', href: '#' },
-            // { name: 'Bengluru', href: '#' },
-            // { name: 'Haidarabad', href: '#' },
-            { name: 'Allahabad', href: '#' },
-            { name: 'Lucknow', href: '#' },
-            { name: 'Varanasi', href: '#' },
-            { name: 'Meerut', href: '#' },
+            { name: 'Tops', href: '#' },
+            { name: 'Pants', href: '#' },
+            { name: 'Sweaters', href: '#' },
+            { name: 'T-Shirts', href: '#' },
+            { name: 'Jackets', href: '#' },
+            { name: 'Activewear', href: '#' },
+            { name: 'Browse All', href: '#' },
           ],
         },
         {
@@ -136,8 +134,8 @@ const navigation = {
     },
   ],
   pages: [
-    { name: 'How it Works', href: '/help' },
-    // { name: 'Teach with Us', href: '#' },
+    { name: 'How it Works', href: '#' },
+    { name: 'Teach with Us', href: '#' },
   ],
 }
 
@@ -164,7 +162,7 @@ export default function Navbar() {
     if (user) {
       setIsAuthenticate(true);
       const getUser = async () => {
-        await getDoc(doc(db, "students", user.uid))
+        await getDoc(doc(db, "teachers", user.uid))
           .then((doc) => {
             setPicture(doc.data().image);
             setName(doc.data().firstName + " " + doc.data().lastName);
@@ -181,7 +179,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-white z-[99]">
+      <div className="bg-white fixed w-full z-[99]">
         {/* Mobile menu */}
         <Transition.Root show={open} as={Fragment}>
           <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>

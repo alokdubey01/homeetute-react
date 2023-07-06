@@ -13,7 +13,7 @@ import { getDoc, addDoc, doc, setDoc, collection, query, getDocs } from 'firebas
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function Application() {
+export default function Application(props) {
     const [open, setOpen] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -21,10 +21,13 @@ export default function Application() {
     const [area, setArea] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-    const [classes, setClasses] = useState();
+    const [standard, setStandard] = useState('');
+    // const [classes, setClasses] = useState();
     const [subject, setSubject] = useState([]);
     const [budget, setBudget] = useState('');
-    const [hours, setHours] = useState('');
+    const [time1, setTime1] = useState('');
+    const [time2, setTime2] = useState('');
+    const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [dataSend, setDataSend] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -56,10 +59,12 @@ export default function Application() {
             area,
             city,
             state,
-            classes,
+            standard,
             subject,
             budget,
-            hours,
+            time1,
+            time2,
+            title,
             description
         }
         setLoading(true);
@@ -80,13 +85,13 @@ export default function Application() {
 
     return (
         <Fragment>
+            <div className='absolute -top-2 -right-2 cursor-pointer' onClick={props.onClick}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
+                </svg>
+            </div>
             <div className="py-1 items-center justify-center relative overflow-hidden">
                 <div className="p-4 bg-gray-700 bg-opacity-10 rounded flex justify-between items-center cursor-pointer" onClick={() => setOpen(1)}>
-                    <div className='absolute top-0 right-0'>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
                     <div className="flex items-center gap-2 cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-indigo-700">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -141,15 +146,15 @@ export default function Application() {
                                 <option value="1st">1st</option>
                                 <option value="2nd">2nd</option>
                                 <option value="3rd">3rd</option>
-                                <option value="4th">4th</option>
-                                <option value="5th">5th</option>
-                                <option value="6th">6th</option>
-                                <option value="7th">7th</option>
-                                <option value="8th">8th</option>
-                                <option value="9th">9th</option>
-                                <option value="10th">10th</option>
-                                <option value="11th">11th</option>
-                                <option value="12th">12th</option>
+                                <option value="4th">4<sup>th</sup></option>
+                                <option value="5th">5<sup>th</sup></option>
+                                <option value="6th">6<sup>th</sup></option>
+                                <option value="7th">7<sup>th</sup></option>
+                                <option value="8th">8<sup>th</sup></option>
+                                <option value="9th">9<sup>th</sup></option>
+                                <option value="10th">10<sup>th</sup></option>
+                                <option value="11th">11<sup>th</sup></option>
+                                <option value="12th">12<sup>th</sup></option>
                             </select> */}
                             <label
                                 className="text-sm leading-none text-black font-medium font-sans" style={{ letterSpacing: '0.33px' }}
@@ -168,6 +173,7 @@ export default function Application() {
                             />
                         </div>
                     </div>
+                    <span>If you want to update your details, please move <Link className='underline text-indigo-700 font-semibold' to="/profile">Here</Link></span>
                 </div>}
             </div>
             <div className="py-1 items-center justify-center relative overflow-hidden">
@@ -255,7 +261,6 @@ export default function Application() {
                             />
                         </div>
                     </div>
-                    <span>If you want to update your communicational details, please click <Link className='underline text-indigo-700 font-semibold' to="/">Here</Link></span>
                 </div>}
             </div>
             <div className="py-1 items-center justify-center relative overflow-hidden">
@@ -283,28 +288,28 @@ export default function Application() {
                             tabIndex="0"
                             className="w-full p-3 mt-1 bg-white border rounded border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
                             aria-labelledby="education"
-                            value={classes}
-                            onChange={(e) => setClasses(e.target.value)}
+                            value={standard}
+                            onChange={(e) => setStandard(e.target.value)}
                         >
                             <option hidden value="Select Education">
-                                Select Cources
+                                Select Class/Standard
                             </option>
                             <option value="Pre Nursery">Pre Nursery</option>
                             <option value="Nursery">Nursery</option>
                             <option value="LKG">LKG</option>
                             <option value="UKG">UKG</option>
-                            <option value="1st">1st</option>
-                            <option value="2nd">2nd</option>
-                            <option value="3rd">3rd</option>
-                            <option value="4th">4th</option>
-                            <option value="5th">5th</option>
-                            <option value="6th">6th</option>
-                            <option value="7th">7th</option>
-                            <option value="8th">8th</option>
-                            <option value="9th">9th</option>
-                            <option value="10th">10th</option>
-                            <option value="11th">11th</option>
-                            <option value="12th">12th</option>
+                            <option value="1st">1<sup>st</sup></option>
+                            <option value="2nd">2<sup>nd</sup></option>
+                            <option value="3rd">3<sup>rd</sup></option>
+                            <option value="4th">4<sup>th</sup></option>
+                            <option value="5th">5<sup>th</sup></option>
+                            <option value="6th">6<sup>th</sup></option>
+                            <option value="7th">7<sup>th</sup></option>
+                            <option value="8th">8<sup>th</sup></option>
+                            <option value="9th">9<sup>th</sup></option>
+                            <option value="10th">10<sup>th</sup></option>
+                            <option value="11th">11<sup>th</sup></option>
+                            <option value="12th">12<sup>th</sup></option>
                         </select>
                     </div>
                     <div className="md:w-64 md:ml-12 md:mt-2 -mt-2">
@@ -317,7 +322,7 @@ export default function Application() {
                         <Autocomplete
                             multiple
                             id="checkboxes-tags-demo"
-                            options={top100Films}
+                            options={subjectsList}
                             disableCloseOnSelect
                             getOptionLabel={(option) => option.title}
                             renderOption={(props, option, { selected }) => (
@@ -331,9 +336,10 @@ export default function Application() {
                                     {option.title}
                                 </li>
                             )}
+                            onChange={(e, value) => setSubject(value)}
                             style={{ width: "auto" }}
                             renderInput={(params) => (
-                                <TextField value={subject} onChange={(e) => setSubject(e.target.value)} {...params} placeholder="Favorites" />
+                                <TextField {...params} placeholder="Subject Name" />
                             )}
                         />
                     </div>
@@ -375,16 +381,18 @@ export default function Application() {
                                 className="text-sm flex items-center leading-none text-black font-medium font-sans" style={{ letterSpacing: '0.33px' }}
                                 id="area"
                             >
-                                Hours <sup>*</sup> <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
+                                Timings <span className='text-xs text-gray-500 mx-0.5'>(From - To)</span> <span title='Teaching Time'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                                 </svg>
                                 </span>
                             </label>
-                            <div className='flex mt-2'>
-                                <input type="number" value={hours} onChange={(e) => setHours(e.target.value)} max={24} min={1} className="rounded-none rounded-l-lg bg-white border focus:ring-blue-500 block flex-1 min-w-0 w-full p-3 border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800" placeholder="1 hours" />
+                            <div className='flex gap-2 mt-2'>
+                                {/* <input type="number" value={hours} onChange={(e) => setTime1(e.target.value)} max={24} min={1} className="rounded-none rounded-l-lg bg-white border focus:ring-blue-500 block flex-1 min-w-0 w-full p-3 border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800" placeholder="1 hours" />
                                 <span className="inline-flex items-center p-3 text-sm text-gray-900 bg-gray-200 border border-l-0 border-gray-300 rounded-r-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                     hours
-                                </span>
+                                </span> */}
+                                <input className="rounded bg-white border focus:ring-blue-500 block flex-1 min-w-0 w-full p-3 border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800" type="time" value={time1} onChange={(e) => setTime1(e.target.value)} />
+                                <input className="rounded bg-white border focus:ring-blue-500 block flex-1 min-w-0 w-full p-3 border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800" type="time" value={time2} onChange={(e) => setTime2(e.target.value)} />
                             </div>
                         </div>
                     </div>
@@ -396,7 +404,7 @@ export default function Application() {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                         </svg>
-                        <h4 className="font-semibold text-sm text-indigo-700 cursor-pointer">Description</h4>
+                        <h4 className="font-semibold text-sm text-indigo-700 cursor-pointer">Title & Description</h4>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -409,16 +417,26 @@ export default function Application() {
                                 className="text-sm leading-none text-black font-medium font-sans" style={{ letterSpacing: '0.33px' }}
                                 id="desc"
                             >
-                                Description <sup>*</sup>
+                                Title & Description <sup>*</sup>
                             </label>
+                            <input
+                                type="text"
+                                tabIndex="0"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="w-full p-3 mt-1 bg-white border rounded border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
+                                aria-labelledby="desc"
+                                placeholder="Enter the title"
+                            />
                             <textarea
                                 type="text"
                                 tabIndex="0"
+                                rows={5}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 className="w-full p-3 mt-1 bg-white border rounded border-gray-400 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800"
                                 aria-labelledby="desc"
-                                placeholder="Tell about your requirements"
+                                placeholder="Tell more about your requirement"
                             />
                         </div>
                     </div>
@@ -434,8 +452,8 @@ export default function Application() {
                         >
                             {loading ? <div className="flex items-center">
                                 <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                                 loading
                             </div> : 'Submit'}
                         </button>
@@ -445,7 +463,7 @@ export default function Application() {
     )
 }
 
-const top100Films = [
+const subjectsList = [
     { title: 'Hindi' },
     { title: 'English' },
     { title: 'Maths' },
